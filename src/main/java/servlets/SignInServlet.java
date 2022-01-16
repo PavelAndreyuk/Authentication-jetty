@@ -1,24 +1,35 @@
 package servlets;
 
-import accounts.AccountService;
-import accounts.UserProfile;
+import DAO.UserDAO;
+import entities.UserEntity;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class SignInServlet extends HttpServlet {
-    private final AccountService accountService;
+    private final UserDAO userDAO;
 
-    public SignInServlet(AccountService accountService) {
-        this.accountService = accountService;
+    static {
+        try {
+            String DB_Driver = "org.h2.Driver";
+            Connection connection = DriverManager.getConnection("jdbc:h2:~/test1", "sa", "");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public SignInServlet(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
     //sign in
     public void doPost(HttpServletRequest request,
-                       HttpServletResponse response) throws ServletException, IOException {
+                       HttpServletResponse response) throws IOException {
         String login = request.getParameter("login");
         String password = request.getParameter("password");
 
@@ -28,7 +39,12 @@ public class SignInServlet extends HttpServlet {
             return;
         }
 
-        UserProfile profile = accountService.getUserByLogin(login);
+        UserEntity profile = null;
+        try {
+            profile = userDAO.getUserByLogin(login);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
         if (profile == null || !profile.getPass().equals(password)) {
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
@@ -37,8 +53,7 @@ public class SignInServlet extends HttpServlet {
         }
         response.setContentType("text/html;charset=utf-8");
         response.getWriter().println("You are entered as: " +
-                "\nlogin: " + profile.getLogin() +
-                "\nemail: " + profile.getEmail());
+                "\nlogin: " + profile.getLogin());
         response.setStatus(HttpServletResponse.SC_OK);
     }
 }

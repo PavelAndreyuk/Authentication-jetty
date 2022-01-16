@@ -1,6 +1,6 @@
 package main;
 
-import accounts.AccountService;
+import DAO.UserDAO;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -12,11 +12,11 @@ import servlets.SignUpServlet;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        AccountService accountService = new AccountService();
+        UserDAO userDAO = new UserDAO();
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
-        context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
-        context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
+        context.addServlet(new ServletHolder(new SignUpServlet(userDAO)), "/signup");
+        context.addServlet(new ServletHolder(new SignInServlet(userDAO)), "/signin");
 
         ResourceHandler resource_handler = new ResourceHandler();
         resource_handler.setResourceBase("public_html");

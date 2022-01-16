@@ -1,14 +1,12 @@
-package accounts;
+package entities;
 
-public class UserProfile {
+public class UserEntity {
     private final String login;
     private final String pass;
-    private final String email;
 
-    public UserProfile(String login, String pass, String email) {
+    public UserEntity(String login, String pass) {
         this.login = login;
         this.pass = pass;
-        this.email = email;
     }
 
     public String getLogin() {
@@ -17,9 +15,5 @@ public class UserProfile {
 
     public String getPass() {
         return pass;
-    }
-
-    public String getEmail() {
-        return email;
     }
 }
