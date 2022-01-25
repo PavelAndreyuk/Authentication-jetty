@@ -1,6 +1,6 @@
 package main;
 
-import DAO.UserDAO;
+import Dao.UserDao;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.HandlerList;
@@ -12,7 +12,7 @@ import servlets.SignUpServlet;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        UserDAO userDAO = new UserDAO();
+        UserDao userDAO = new UserDao();
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
 
         context.addServlet(new ServletHolder(new SignUpServlet(userDAO)), "/signup");

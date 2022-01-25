@@ -1,29 +1,18 @@
 package servlets;
 
-import DAO.UserDAO;
-import entities.UserEntity;
+import Dao.UserDao;
+import models.User;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 public class SignUpServlet extends HttpServlet {
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
-    static {
-        try {
-            String DB_Driver = "org.h2.Driver";
-            Connection connection = DriverManager.getConnection("jdbc:h2:~/test1", "sa", "");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public SignUpServlet(UserDAO userDAO) {
+    public SignUpServlet(UserDao userDAO) {
         this.userDAO = userDAO;
     }
 
@@ -38,13 +27,8 @@ public class SignUpServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
-        UserEntity profile = new UserEntity(login, password);
-        try {
-            userDAO.addNewUser(profile);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        User profile = new User(login, password);
+        userDAO.save(profile);
         response.sendRedirect("succesful_registration.html");
     }
 }

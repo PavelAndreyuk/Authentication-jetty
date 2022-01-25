@@ -1,29 +1,17 @@
 package servlets;
 
-import DAO.UserDAO;
-import entities.UserEntity;
+import Dao.UserDao;
+import models.User;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 
 public class SignInServlet extends HttpServlet {
-    private final UserDAO userDAO;
+    private final UserDao userDAO;
 
-    static {
-        try {
-            String DB_Driver = "org.h2.Driver";
-            Connection connection = DriverManager.getConnection("jdbc:h2:~/test1", "sa", "");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public SignInServlet(UserDAO userDAO) {
+    public SignInServlet(UserDao userDAO) {
         this.userDAO = userDAO;
     }
 
@@ -38,14 +26,8 @@ public class SignInServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return;
         }
-
-        UserEntity profile = null;
-        try {
-            profile = userDAO.getUserByLogin(login);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if (profile == null || !profile.getPass().equals(password)) {
+        User profile = userDAO.getUserByLogin(login);
+        if (profile == null || !profile.getPassword().equals(password)) {
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().println("Unauthorized");
